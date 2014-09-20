@@ -25,9 +25,9 @@ console.log(mapFiles('lib/*.txt'));
 Returns an object that looks something like:
 
 ```js
-{ a: { path: 'test/fixtures/a.txt', contents: 'This is file a.txt.' },
-  b: { path: 'test/fixtures/b.txt', contents: 'This is file b.txt.' },
-  c: { path: 'test/fixtures/c.txt', contents: 'This is file c.txt.' } }
+{ 'fixtures/a.txt': { name: 'a.txt' , contents: 'This is file a.txt.' },
+  'fixtures/b.txt': { name: 'b.txt' , contents: 'This is file b.txt.' },
+  'fixtures/c.txt': { name: 'c.txt' , contents: 'This is file c.txt.' } }
 ```
 
 ## API
@@ -37,9 +37,8 @@ Returns an object that looks something like:
 * `opts` **{Object}**: Options for globby, or pass a custom `parse` or `rename`.    
 * `returns`: {Object}  
 
-Return an object for all files matching the
-given `patterns` and `options`. The basename
-of the file is used as the key.
+Return an object for all files matching the given `patterns`
+and `options`. The full filepath of the file is used as the key.
 
 ## Examples
 
@@ -58,9 +57,9 @@ console.log(files);
 Returns something like:
 
 ```js
-{ 'a.txt': { path: 'test/fixtures/a.txt', contents: 'This is file a.txt.' },
-  'b.txt': { path: 'test/fixtures/b.txt', contents: 'This is file b.txt.' },
-  'c.txt': { path: 'test/fixtures/c.txt', contents: 'This is file c.txt.' } }
+{ 'fixtures/a.txt': { name: 'a' , contents: 'This is file a.txt.' },
+  'fixtures/b.txt': { name: 'b' , contents: 'This is file b.txt.' },
+  'fixtures/c.txt': { name: 'c' , contents: 'This is file c.txt.' } }
 ```
 
 
@@ -84,9 +83,9 @@ console.log(files);
 Returns something like:
 
 ```js
-{ a: { path: 'test/fixtures/a.js', fn: { foo: [Function: foo] } },
-  b: { path: 'test/fixtures/b.js', fn: { bar: [Function: bar] } },
-  c: { path: 'test/fixtures/c.js', fn: { baz: [Function: baz] } } }
+{ 'fixtures/a.js': { path: 'fixtures/a.js' , fn: { foo: [Function: foo] } },
+  'fixtures/b.js': { path: 'fixtures/b.js' , fn: { bar: [Function: bar] } },
+  'fixtures/c.js': { path: 'fixtures/c.js' , fn: { baz: [Function: baz] } } }
 ```
 
 

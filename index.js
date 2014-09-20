@@ -28,15 +28,15 @@ function rename(filepath, opts) {
   if (opts.rename) {
     return opts.rename(filepath, opts);
   }
-  return path.basename(filepath, path.extname(filepath));
+  return filepath;
 }
 
 
 /**
- * Default parsing function, returns an object
+ * Default parsing function. By default this function returns an object
  * with the following properties:
  *
- *   - `path` {String}: the absolute file path
+ *   - `name` {String}: the basename of the file, excluding extension
  *   - `contents` {String}: the file's contents
  *
  * ```js
@@ -54,15 +54,15 @@ function parse(filepath, opts) {
   if (opts.parse) {
     return opts.parse(filepath, opts);
   }
+  var name = path.basename(filepath, path.extname(filepath));
   var str = fs.readFileSync(filepath, 'utf8');
-  return {path: filepath, contents: str};
+  return {name: name, contents: str};
 }
 
 
 /**
- * Return an object for all files matching the
- * given `patterns` and `options`. The basename
- * of the file is used as the key.
+ * Return an object for all files matching the given `patterns`
+ * and `options`. The full filepath of the file is used as the key.
  *
  * @param  {String} `patterns` Glob patterns to pass to [globby]
  * @param  {Object} `opts` Options for globby, or pass a custom `parse` or `rename`.
