@@ -1,0 +1,48 @@
+{
+  "name": "map-files",
+  "description": "Traverse a directory of files, and return an object. Pass a `rename` function for the keys, or a `parse` function for the content.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/jonschlinkert/map-files",
+  "author": {
+    "name": "Jon Schlinkert",
+    "url": "https://github.com/jonschlinkert"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jonschlinkert/map-files.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jonschlinkert/map-files/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/jonschlinkert/map-files/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "^4.0.4",
+    "verb": ">= 0.2.6",
+    "verb-tag-jscomments": ">= 0.2.0"
+  },
+  "keywords": [
+    "docs",
+    "documentation",
+    "generate",
+    "generator",
+    "markdown",
+    "templates",
+    "verb"
+  ],
+  "dependencies": {
+    "globby": "^0.1.1"
+  }
+}
