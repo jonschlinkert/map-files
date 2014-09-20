@@ -1,7 +1,7 @@
 # map-files [![NPM version](https://badge.fury.io/js/map-files.svg)](http://badge.fury.io/js/map-files)
 
 
-> Traverse a directory of files, and return an object. Pass a `rename` function for the keys, or a `parse` function for the content.
+> Return an object for a glob of files. Pass a `rename` function for the keys, or a `parse` function for the content, allowing it to be used for readable or require-able files.
 
 ## Install
 #### Install with [npm](npmjs.org):
@@ -34,7 +34,7 @@ Returns an object that looks something like:
 ### [mapFiles](index.js#L73)
 
 * `patterns` **{String}**: Glob patterns to pass to [globby]    
-* `opts` **{Object}**: Options for globby, or pass a custom `parseFn` or `renameFn`.    
+* `opts` **{Object}**: Options for globby, or pass a custom `parse` or `rename`.    
 * `returns`: {Object}  
 
 Return an object for all files matching the
@@ -43,13 +43,13 @@ of the file is used as the key.
 
 ## Examples
 
-### options.renameFn
+### options.rename
 
 Pass a rename function to be used as the key of each file object:
 
 ```js
 var files = mapFiles('lib/*.txt', {
-  renameFn: function (filepath) {
+  rename: function (filepath) {
     return path.basename(filepath);
   }
 });
@@ -64,7 +64,7 @@ Returns something like:
 ```
 
 
-### options.parseFn
+### options.parse
 
 Pass a parsing function to change the object returned for each file. The
 default function reads files and returns a string. This example shows how
@@ -72,7 +72,7 @@ you might instead `require` each file.
 
 ```js
 var files = mapFiles('lib/*.txt', {
-  parseFn: function (filepath) {
+  parse: function (filepath) {
     return {
       path: filepath,
       fn: require(path.resolve(filepath))

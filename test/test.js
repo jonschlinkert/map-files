@@ -25,7 +25,7 @@ describe('mapFiles', function () {
 
   it('should use a custom parse function.', function () {
     var actual = mapFiles('test/fixtures/**/*.js', {
-      parseFn: function (filepath) {
+      parse: function (filepath) {
         return {
           path: filepath,
           fn: require(path.resolve(filepath))
@@ -44,7 +44,7 @@ describe('mapFiles', function () {
 
   it('should use a custom rename function.', function () {
     var actual = mapFiles('test/fixtures/**/*.txt', {
-      renameFn: function (filepath) {
+      rename: function (filepath) {
         return path.basename(filepath);
       }
     });

@@ -14,7 +14,7 @@ var glob = require('globby');
  * basename of the file.
  *
  * ```js
- * renameFn('foo/bar/baz.txt')
+ * rename('foo/bar/baz.txt')
  * //=> 'baz'
  * ```
  *
@@ -24,9 +24,9 @@ var glob = require('globby');
  * @api private
  */
 
-function renameFn(filepath, opts) {
-  if (opts.renameFn) {
-    return opts.renameFn(filepath, opts);
+function rename(filepath, opts) {
+  if (opts.rename) {
+    return opts.rename(filepath, opts);
   }
   return path.basename(filepath, path.extname(filepath));
 }
@@ -40,7 +40,7 @@ function renameFn(filepath, opts) {
  *   - `contents` {String}: the file's contents
  *
  * ```js
- * parseFn('foo/bar/baz.txt')
+ * parse('foo/bar/baz.txt')
  * //=> {path: "foo/bar/baz.txt", contents: "This is the file's contents!"}
  * ```
  *
@@ -50,9 +50,9 @@ function renameFn(filepath, opts) {
  * @api private
  */
 
-function parseFn(filepath, opts) {
-  if (opts.parseFn) {
-    return opts.parseFn(filepath, opts);
+function parse(filepath, opts) {
+  if (opts.parse) {
+    return opts.parse(filepath, opts);
   }
   var str = fs.readFileSync(filepath, 'utf8');
   return {path: filepath, contents: str};
@@ -65,7 +65,7 @@ function parseFn(filepath, opts) {
  * of the file is used as the key.
  *
  * @param  {String} `patterns` Glob patterns to pass to [globby]
- * @param  {Object} `opts` Options for globby, or pass a custom `parseFn` or `renameFn`.
+ * @param  {Object} `opts` Options for globby, or pass a custom `parse` or `rename`.
  * @return {Object}
  * @api public
  */
@@ -75,8 +75,8 @@ function mapFiles(patterns, opts) {
   opts = opts || {};
 
   return files.reduce(function (acc, filepath) {
-    var name = renameFn(filepath, opts);
-    var file = parseFn(filepath, opts);
+    var name = rename(filepath, opts);
+    var file = parse(filepath, opts);
     acc[name] = file;
     return acc;
   }, {});
