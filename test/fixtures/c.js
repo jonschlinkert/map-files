@@ -1,3 +1,3 @@
-exports.baz = function baz(str) {
+module.exports = function baz(str) {
   return str;
 };

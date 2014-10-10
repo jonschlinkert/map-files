@@ -1,3 +1,3 @@
-exports.bar = function bar(str) {
+module.exports = function bar(str) {
   return str;
 };
