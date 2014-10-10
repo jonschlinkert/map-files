@@ -1,13 +1,0 @@
-
-[0m[0m
-[0m  mapFiles[0m
-  [32m  √[0m[90m should map files [0m
-{ 'fixtures/a.js': { path: 'fixtures/a.js', fn: { foo: [Function: foo] } },
-  'fixtures/b.js': { path: 'fixtures/b.js', fn: { bar: [Function: bar] } },
-  'fixtures/c.js': { path: 'fixtures/c.js', fn: { baz: [Function: baz] } } }
-  [32m  √[0m[90m should use a custom parse function. [0m
-  [32m  √[0m[90m should use a custom rename function. [0m
-
-
-[92m [0m[32m 3 passing[0m[90m (31ms)[0m
-
