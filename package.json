@@ -1,7 +1,7 @@
 {
   "name": "map-files",
   "description": "Return an object for a glob of files. Pass a `rename` function for the keys, or a `parse` function for the content, allowing it to be used for readable or require-able files.",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "homepage": "https://github.com/jonschlinkert/map-files",
   "author": {
     "name": "Jon Schlinkert",
@@ -28,14 +28,13 @@
     "test": "mocha -R spec"
   },
   "dependencies": {
-    "globby": "^0.1.1"
+    "globby": "^0.1.1",
+    "relative": "^0.1.6"
   },
   "devDependencies": {
     "gray-matter": "^0.5.1",
     "mocha": "*",
-    "should": "^4.0.4",
-    "verb": ">= 0.2.6",
-    "verb-tag-jscomments": ">= 0.2.0"
+    "should": "^4.0.4"
   },
   "keywords": [
     "dir",
