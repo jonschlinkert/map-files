@@ -6,7 +6,7 @@
 
 var fs = require('fs');
 var path = require('path');
-var glob = require('globby');
+var relative = require('relative');
 
 /**
  * Return an object for all files matching the given `patterns`
@@ -19,9 +19,11 @@ var glob = require('globby');
  */
 
 module.exports = function mapFiles(patterns, options) {
-  var files = glob.sync(patterns, options);
+  var files = globber(patterns, options);
+  var cwd = options && options.cwd || process.cwd();
 
   return files.reduce(function (cache, filepath) {
+    filepath = relative(path.resolve(cwd, filepath));
     var key = name(filepath, options);
     var str = read(filepath, options);
 
@@ -29,6 +31,14 @@ module.exports = function mapFiles(patterns, options) {
     return cache;
   }, {});
 };
+
+function globber(patterns, options) {
+  if (options && options.glob) {
+    return options.glob(patterns, options);
+  }
+  var glob = require('globby');
+  return glob.sync(patterns, options);
+}
 
 function name(filepath, options) {
   if (options && options.name) {

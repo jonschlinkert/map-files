@@ -30,6 +30,19 @@ describe('files', function () {
     });
   });
 
+  it('should use a cwd.', function () {
+    var cache = files('*.txt', {cwd: 'test/fixtures'});
+
+    cache.should.have.property('a');
+    cache.should.have.property('b');
+    cache.should.have.property('c');
+    cache.should.eql({
+      a: { content: 'AAA', path: 'test/fixtures/a.txt' },
+      b: { content: 'BBB', path: 'test/fixtures/b.txt' },
+      c: { content: 'CCC', path: 'test/fixtures/c.txt' }
+    });
+  });
+
   it('should rename the key with a custom function.', function () {
     var cache = files('test/fixtures/*.txt', {
       name: function(filepath) {
