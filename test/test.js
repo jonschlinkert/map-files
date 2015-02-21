@@ -1,15 +1,15 @@
 /*!
  * map-files <https://github.com/jonschlinkert/map-files>
  *
- * Copyright (c) 2014 Jon Schlinkert, contributors.
- * Licensed under the MIT License
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT License.
  */
 
 'use strict';
 
 var fs = require('fs');
 var path = require('path');
-var should = require('should');
+require('should');
 var assert = require('assert');
 var matter = require('gray-matter');
 var glob = require('globby');
