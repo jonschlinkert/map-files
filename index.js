@@ -19,38 +19,38 @@ var relative = require('relative');
  */
 
 module.exports = function mapFiles(patterns, options) {
-  var files = globber(patterns, options);
+  var files = glob(patterns, options);
   var cwd = options && options.cwd || process.cwd();
 
   return files.reduce(function (cache, filepath) {
     filepath = relative(path.resolve(cwd, filepath));
-    var key = name(filepath, options);
-    var str = read(filepath, options);
+    var key = name(filepath, cache, options);
+    var str = read(filepath, cache, options);
 
     cache[key] = str;
     return cache;
   }, {});
 };
 
-function globber(patterns, options) {
+function glob(patterns, options) {
   if (options && options.glob) {
     return options.glob(patterns, options);
   }
-  var glob = require('globby');
-  return glob.sync(patterns, options);
+  var globby = require('globby');
+  return globby.sync(patterns, options);
 }
 
-function name(filepath, options) {
+function name(filepath, cache, options) {
   if (options && options.name) {
-    return options.name(filepath, options);
+    return options.name(filepath, cache, options);
   }
   var ext = path.extname(filepath);
   return path.basename(filepath, ext);
 }
 
-function read(filepath, options) {
+function read(filepath, cache, options) {
   if (options && options.read) {
-    return options.read(filepath, options);
+    return options.read(filepath, cache, options);
   }
   var str = fs.readFileSync(filepath, 'utf8');
   return {path: filepath, content: str};
