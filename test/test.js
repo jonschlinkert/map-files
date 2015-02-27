@@ -9,12 +9,28 @@
 
 var fs = require('fs');
 var path = require('path');
-require('should');
 var assert = require('assert');
 var matter = require('gray-matter');
+var extend = require('extend-shallow');
+var relative = require('relative');
 var glob = require('globby');
-var files = require('..');
+var mapFiles = require('..');
+require('should');
 
+function files(patterns, opts) {
+  var o = {};
+  o.name = function (fp) {
+    return path.basename(fp, path.extname(fp));
+  };
+  o.read = function (fp) {
+    var res = {};
+    res.content = fs.readFileSync(fp, 'utf8');
+    res.path = relative(fp);
+    return res;
+  };
+  opts = extend({}, o, opts);
+  return mapFiles(patterns, opts);
+};
 
 describe('files', function () {
   it('should load files from a glob pattern.', function () {
@@ -46,7 +62,7 @@ describe('files', function () {
   it('should rename the key with a custom function.', function () {
     var cache = files('test/fixtures/*.txt', {
       name: function(filepath) {
-        return filepath;
+        return relative(filepath);
       }
     })
     cache.should.have.property('test/fixtures/a.txt');
@@ -57,7 +73,9 @@ describe('files', function () {
   it('should read files with a custom function.', function () {
     var cache = files('test/fixtures/*.txt', {
       read: function(filepath) {
-        return matter.read(filepath);
+        var res = matter.read(filepath);
+        res.path = relative(res.path);
+        return res;
       }
     });
     cache.should.have.property('a', { data: {}, content: 'AAA', orig: 'AAA', path: 'test/fixtures/a.txt' });
@@ -69,7 +87,7 @@ describe('files', function () {
     var cache = files('test/fixtures/*.js', {
       read: function (filepath) {
         return {
-          path: filepath,
+          path: relative(filepath),
           helper: require(path.resolve(filepath))
         }
       }
@@ -85,10 +103,12 @@ describe('files', function () {
   it('should use multiple custom functions.', function () {
     var cache = files('test/fixtures/*.txt', {
       read: function(filepath) {
-        return matter.read(filepath);
+        var res = matter.read(filepath);
+        res.path = relative(res.path);
+        return res;
       },
       name: function(filepath) {
-        return filepath;
+        return relative(filepath);
       }
     });
     cache.should.have.property('test/fixtures/a.txt', { data: {}, content: 'AAA', orig: 'AAA', path: 'test/fixtures/a.txt' });
