@@ -6,11 +6,11 @@
 
 var fs = require('fs');
 var path = require('path');
-var relative = require('relative');
+var globby = require('globby');
 
 /**
  * Return an object for all files matching the given `patterns`
- * and `options`. The full filepath of the file is used as the key.
+ * and `opts`. The full filepath of the file is used as the key.
  *
  * @param  {String} `patterns` Glob patterns to pass to [globby]
  * @param  {Object} `opts` Options for globby, or pass a custom `parse` or `name`.
@@ -18,40 +18,44 @@ var relative = require('relative');
  * @api public
  */
 
-module.exports = function mapFiles(patterns, options) {
-  var files = glob(patterns, options);
-  var cwd = options && options.cwd || process.cwd();
+module.exports = function mapFiles(patterns, opts) {
+  var files = glob(patterns, opts);
+  var cwd = opts && opts.cwd || process.cwd();
 
-  return files.reduce(function (cache, filepath) {
-    filepath = relative(path.resolve(cwd, filepath));
-    var key = name(filepath, cache, options);
-    var str = read(filepath, cache, options);
+  return files.reduce(function (acc, fp) {
+    fp = path.resolve(cwd, fp);
+    var key = name(fp, acc, opts);
+    var str = read(fp, acc, opts);
 
-    cache[key] = str;
-    return cache;
+    acc[key] = str;
+    return acc;
   }, {});
 };
 
-function glob(patterns, options) {
-  if (options && options.glob) {
-    return options.glob(patterns, options);
+function glob(patterns, opts) {
+  if (opts && opts.glob) {
+    return opts.glob(patterns, opts);
   }
-  var globby = require('globby');
-  return globby.sync(patterns, options);
+  return globby.sync(patterns, opts);
 }
 
-function name(filepath, cache, options) {
-  if (options && options.name) {
-    return options.name(filepath, cache, options);
+function name(fp, acc, opts) {
+  if (opts && opts.name) {
+    return opts.name(fp, acc, opts);
   }
-  var ext = path.extname(filepath);
-  return path.basename(filepath, ext);
+  var ext = path.extname(fp);
+  return path.basename(fp, ext);
 }
 
-function read(filepath, cache, options) {
-  if (options && options.read) {
-    return options.read(filepath, cache, options);
+function read(fp, acc, opts) {
+  fp = path.resolve(fp);
+
+  if (opts && opts.read) {
+    return opts.read(fp, acc, opts);
   }
-  var str = fs.readFileSync(filepath, 'utf8');
-  return {path: filepath, content: str};
+
+  var res = {};
+  res.content = fs.readFileSync(fp, 'utf8');
+  res.path = fp;
+  return res;
 }
