@@ -31,6 +31,8 @@ module.exports = mapFiles;
  */
 
 function mapFiles(patterns, opts) {
+  opts = opts || {};
+
   opts.cwd = opts && opts.cwd || process.cwd();
   var files = glob(patterns, opts);
 
@@ -38,7 +40,6 @@ function mapFiles(patterns, opts) {
     var fn = memo('files', opts.cwd, patterns, reduce);
     return fn(files, opts);
   }
-
   return reduce(files, opts);
 };
 
