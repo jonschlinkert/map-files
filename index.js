@@ -32,8 +32,7 @@ module.exports = mapFiles;
 
 function mapFiles(patterns, opts) {
   opts = opts || {};
-
-  opts.cwd = opts && opts.cwd || process.cwd();
+  opts.cwd = opts.cwd ? path.resolve(opts.cwd) : process.cwd();
   var files = glob(patterns, opts);
 
   if (opts.cache === true) {
@@ -41,7 +40,7 @@ function mapFiles(patterns, opts) {
     return fn(files, opts);
   }
   return reduce(files, opts);
-};
+}
 
 /**
  * Expose results cache.
@@ -64,7 +63,8 @@ function reduce(files, opts) {
  */
 
 function glob(patterns, opts) {
-  if (opts && opts.glob) {
+  opts = opts || {};
+  if (typeof opts.glob === 'function') {
     return opts.glob(patterns, opts);
   }
   if (opts.cache === true) {
@@ -79,9 +79,9 @@ function glob(patterns, opts) {
  */
 
 function name(fp, acc, opts) {
-  var fn = opts && opts.name || opts.renameKey;
-  if (fn) {
-    return opts.name(fp, acc, opts);
+  var fn = (opts && opts.name) || opts.renameKey;
+  if (typeof fn === 'function') {
+    return fn(fp, acc, opts);
   }
   var ext = path.extname(fp);
   return path.basename(fp, ext);
@@ -93,7 +93,8 @@ function name(fp, acc, opts) {
 
 function read(fp, acc, opts) {
   fp = path.resolve(fp);
-  if (opts && opts.read) {
+  opts = opts || {};
+  if (typeof opts.read === 'function') {
     return opts.read(fp, acc, opts);
   }
   var res = {};
