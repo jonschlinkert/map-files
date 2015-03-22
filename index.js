@@ -7,6 +7,7 @@
 var fs = require('fs');
 var path = require('path');
 var globby = require('globby');
+var isGlob = require('is-glob');
 
 /**
  * Expose `mapFiles`
@@ -63,7 +64,9 @@ function reduce(files, opts) {
  */
 
 function glob(patterns, opts) {
+  if (!isGlob(patterns)) { return [patterns]; }
   opts = opts || {};
+
   if (typeof opts.glob === 'function') {
     return opts.glob(patterns, opts);
   }
@@ -79,7 +82,7 @@ function glob(patterns, opts) {
  */
 
 function name(fp, acc, opts) {
-  var fn = (opts && opts.name) || opts.renameKey;
+  var fn = opts && (opts.name || opts.renameKey);
   if (typeof fn === 'function') {
     return fn(fp, acc, opts);
   }
