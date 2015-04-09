@@ -7,6 +7,7 @@
 
 'use strict';
 
+/* deps:mocha */
 var fs = require('fs');
 var path = require('path');
 var assert = require('assert');
@@ -36,9 +37,11 @@ function files(patterns, opts) {
 describe('files', function () {
   it('should cache files when `opts.cache` is true.', function () {
     var res = files('test/fixtures/*.txt', {cache: true});
+
     mapFiles.should.have.property('cache');
     mapFiles.cache.should.have.property('glob:' + path.resolve('test/fixtures/*.txt'));
     mapFiles.cache.should.have.property('files:' + path.resolve('test/fixtures/*.txt'));
+
     res.should.have.property('a');
     res.should.have.property('b');
     res.should.have.property('c');
@@ -51,7 +54,6 @@ describe('files', function () {
 
   it('should load files from a glob pattern.', function () {
     var cache = files('test/fixtures/*.txt');
-
     cache.should.have.property('a');
     cache.should.have.property('b');
     cache.should.have.property('c');
@@ -62,9 +64,21 @@ describe('files', function () {
     });
   });
 
+  it('should ignore files passed on the `ignore` option:', function () {
+    var cache = files('test/fixtures/*.txt', {ignore: ['**/a.txt']});
+    // not
+    cache.should.have.not.property('a');
+    // should
+    cache.should.have.property('b');
+    cache.should.have.property('c');
+    cache.should.eql({
+      b: { content: 'BBB', path: 'test/fixtures/b.txt' },
+      c: { content: 'CCC', path: 'test/fixtures/c.txt' }
+    });
+  });
+
   it('should use a cwd.', function () {
     var cache = files('*.txt', {cwd: 'test/fixtures'});
-
     cache.should.have.property('a');
     cache.should.have.property('b');
     cache.should.have.property('c');

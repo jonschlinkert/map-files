@@ -7,6 +7,7 @@
 var fs = require('fs');
 var path = require('path');
 var globby = require('globby');
+var mm = require('micromatch');
 
 /**
  * Expose `mapFiles`
@@ -33,7 +34,7 @@ module.exports = mapFiles;
 function mapFiles(patterns, opts) {
   opts = opts || {};
   opts.cwd = opts.cwd ? path.resolve(opts.cwd) : process.cwd();
-  var files = glob(patterns, opts);
+  var files = without(glob(patterns, opts), opts.ignored || []);
 
   if (opts.cache === true) {
     var fn = memo('files', opts.cwd, patterns, reduce);
@@ -64,7 +65,6 @@ function reduce(files, opts) {
 
 function glob(patterns, opts) {
   opts = opts || {};
-
   if (typeof opts.glob === 'function') {
     return opts.glob(patterns, opts);
   }
@@ -116,4 +116,21 @@ function memo(name, cwd, patterns, fn) {
     }
     return (cache[key] = fn.apply(fn, arguments));
   };
+}
+
+/**
+ * Returns an array of file paths excluding
+ * files that match the given glob patterns.
+ */
+
+function without(files, patterns) {
+  var len = files.length, res = [];
+  while (len--) {
+    var fp = files[len];
+    if (mm.any(fp, patterns)) {
+      continue;
+    }
+    res.push(fp);
+  }
+  return res;
 }
