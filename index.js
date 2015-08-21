@@ -6,8 +6,10 @@
 
 var fs = require('fs');
 var path = require('path');
-var globby = require('globby');
-var mm = require('micromatch');
+
+var lazy = require('lazy-cache')(require);
+lazy('globby', 'glob');
+lazy('micromatch', 'mm');
 
 /**
  * Expose `mapFiles`
@@ -69,10 +71,10 @@ function glob(patterns, opts) {
     return opts.glob(patterns, opts);
   }
   if (opts.cache === true) {
-    var fn = memo('glob', opts.cwd, patterns, globby.sync);
+    var fn = memo('glob', opts.cwd, patterns, lazy.glob.sync);
     return fn(patterns, opts);
   }
-  return globby.sync(patterns, opts);
+  return lazy.glob.sync(patterns, opts);
 }
 
 /**
@@ -127,7 +129,7 @@ function without(files, patterns) {
   var len = files.length, res = [];
   while (len--) {
     var fp = files[len];
-    if (mm.any(fp, patterns)) {
+    if (lazy.mm.any(fp, patterns)) {
       continue;
     }
     res.push(fp);
