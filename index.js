@@ -40,6 +40,8 @@ function mapFiles(patterns, options) {
 function define(file, key, fn) {
   var cached;
   Object.defineProperty(file, key, {
+    configurable: true,
+    enumerable: true,
     set: function(val) {
       cached = val;
     },
