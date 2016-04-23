@@ -1,7 +1,7 @@
 {
   "name": "map-files",
   "description": "Return an object for a glob of files. Pass a `rename` function for the keys, or a `parse` function for the content, allowing it to be used for readable or require-able files.",
-  "version": "0.7.6",
+  "version": "0.8.0",
   "homepage": "https://github.com/jonschlinkert/map-files",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "jonschlinkert/map-files",
