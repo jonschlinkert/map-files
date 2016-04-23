@@ -3,10 +3,7 @@
   "description": "Return an object for a glob of files. Pass a `rename` function for the keys, or a `parse` function for the content, allowing it to be used for readable or require-able files.",
   "version": "0.7.5",
   "homepage": "https://github.com/jonschlinkert/map-files",
-  "author": {
-    "name": "Jon Schlinkert",
-    "url": "https://github.com/jonschlinkert"
-  },
+  "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "jonschlinkert/map-files",
   "bugs": {
     "url": "https://github.com/jonschlinkert/map-files/issues"
@@ -23,16 +20,16 @@
     "test": "mocha"
   },
   "dependencies": {
-    "globby": "^2.1.0",
-    "lazy-cache": "^0.2.3",
-    "micromatch": "^2.2.0"
+    "lazy-cache": "^1.0.4",
+    "matched": "^0.4.1",
+    "micromatch": "^2.3.8"
   },
   "devDependencies": {
-    "extend-shallow": "^1.1.1",
-    "gray-matter": "^1.0.1",
-    "mocha": "*",
-    "relative": "^2.0.0",
-    "should": "^5.0.0"
+    "extend-shallow": "^2.0.1",
+    "gray-matter": "^2.0.2",
+    "mocha": "^2.4.5",
+    "relative": "^3.0.2",
+    "should": "^8.3.1"
   },
   "keywords": [
     "dir",
@@ -51,5 +48,15 @@
     "object",
     "path",
     "paths"
-  ]
+  ],
+  "verb": {
+    "related": {
+      "list": [
+        "file-reader",
+        "filter-files",
+        "micromatch",
+        "export-files"
+      ]
+    }
+  }
 }

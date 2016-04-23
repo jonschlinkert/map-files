@@ -8,7 +8,7 @@ var fs = require('fs');
 var path = require('path');
 
 var lazy = require('lazy-cache')(require);
-lazy('globby', 'glob');
+lazy('matched', 'glob');
 lazy('micromatch', 'mm');
 
 /**
@@ -52,7 +52,7 @@ function mapFiles(patterns, opts) {
 var cache = mapFiles.cache = {};
 
 function reduce(files, opts) {
-  return files.reduce(function (acc, fp) {
+  return files.reduce(function(acc, fp) {
     fp = path.resolve(opts.cwd, fp);
     var key = name(fp, acc, opts);
     var str = read(fp, acc, opts);
@@ -112,7 +112,7 @@ function read(fp, acc, opts) {
 
 function memo(name, cwd, patterns, fn) {
   var key = name + ':' + cwd + '/' + patterns;
-  return function () {
+  return function() {
     if (cache.hasOwnProperty(key)) {
       return cache[key];
     }

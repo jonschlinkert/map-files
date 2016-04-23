@@ -7,23 +7,23 @@
 
 'use strict';
 
-/* deps:mocha */
+require('mocha');
+require('should');
 var fs = require('fs');
 var path = require('path');
 var assert = require('assert');
 var matter = require('gray-matter');
 var extend = require('extend-shallow');
 var relative = require('relative');
-var glob = require('globby');
+var glob = require('matched');
 var mapFiles = require('..');
-require('should');
 
 function files(patterns, opts) {
   var o = {};
-  o.name = function (fp) {
+  o.name = function(fp) {
     return path.basename(fp, path.extname(fp));
   };
-  o.read = function (fp) {
+  o.read = function(fp) {
     var res = {};
     res.content = fs.readFileSync(fp, 'utf8');
     res.path = relative(fp);
@@ -34,8 +34,8 @@ function files(patterns, opts) {
   return res;
 };
 
-describe('files', function () {
-  it('should cache files when `opts.cache` is true.', function () {
+describe('files', function() {
+  it('should cache files when `opts.cache` is true.', function() {
     var res = files('test/fixtures/*.txt', {cache: true});
 
     mapFiles.should.have.property('cache');
@@ -52,7 +52,7 @@ describe('files', function () {
     });
   });
 
-  it('should load files from a glob pattern.', function () {
+  it('should load files from a glob pattern.', function() {
     var cache = files('test/fixtures/*.txt');
     cache.should.have.property('a');
     cache.should.have.property('b');
@@ -64,7 +64,7 @@ describe('files', function () {
     });
   });
 
-  it('should ignore files passed on the `ignore` option:', function () {
+  it('should ignore files passed on the `ignore` option:', function() {
     var cache = files('test/fixtures/*.txt', {ignore: ['**/a.txt']});
     // not
     cache.should.have.not.property('a');
@@ -77,7 +77,7 @@ describe('files', function () {
     });
   });
 
-  it('should use a cwd.', function () {
+  it('should use a cwd.', function() {
     var cache = files('*.txt', {cwd: 'test/fixtures'});
     cache.should.have.property('a');
     cache.should.have.property('b');
@@ -89,7 +89,7 @@ describe('files', function () {
     });
   });
 
-  it('should rename the key with a custom function.', function () {
+  it('should rename the key with a custom function.', function() {
     var cache = files('test/fixtures/*.txt', {
       name: function(filepath) {
         return relative(filepath);
@@ -100,7 +100,7 @@ describe('files', function () {
     cache.should.have.property('test/fixtures/c.txt');
   });
 
-  it('should read files with a custom function.', function () {
+  it('should read files with a custom function.', function() {
     var cache = files('test/fixtures/*.txt', {
       read: function(filepath) {
         var res = matter.read(filepath);
@@ -113,9 +113,9 @@ describe('files', function () {
     cache.should.have.property('c', { data: {}, content: 'CCC', orig: 'CCC', path: 'test/fixtures/c.txt' });
   });
 
-  it('should require files with a custom function.', function () {
+  it('should require files with a custom function.', function() {
     var cache = files('test/fixtures/*.js', {
-      read: function (filepath) {
+      read: function(filepath) {
         return {
           path: relative(filepath),
           helper: require(path.resolve(filepath))
@@ -130,7 +130,7 @@ describe('files', function () {
     cache['a'].helper.should.be.a.function;
   });
 
-  it('should use multiple custom functions.', function () {
+  it('should use multiple custom functions.', function() {
     var cache = files('test/fixtures/*.txt', {
       read: function(filepath) {
         var res = matter.read(filepath);
@@ -146,9 +146,9 @@ describe('files', function () {
     cache.should.have.property('test/fixtures/c.txt', { data: {}, content: 'CCC', orig: 'CCC', path: 'test/fixtures/c.txt' });
   });
 
-  it('readme example #2.', function () {
+  it('readme example #2.', function() {
     var cache = files('test/fixtures/*.js', {
-      read: function (fp) {
+      read: function(fp) {
         return require(path.resolve(fp));
       }
     });
