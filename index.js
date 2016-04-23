@@ -32,7 +32,8 @@ function mapFiles(patterns, options) {
 
   return files.reduce(function(acc, filepath) {
     var file = createFile(filepath, opts);
-    acc[renameKey(file, opts)] = file;
+    file.key = renameKey(file, opts);
+    acc[file.key] = file;
     return acc;
   }, {});
 }
