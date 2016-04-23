@@ -1,8 +1,6 @@
-# map-files [![NPM version](https://img.shields.io/npm/v/map-files.svg?style=flat)](https://www.npmjs.com/package/map-files) [![Build Status](https://img.shields.io/travis/jonschlinkert/map-files.svg?style=flat)](https://travis-ci.org/jonschlinkert/map-files)
+# map-files [![NPM version](https://img.shields.io/npm/v/map-files.svg?style=flat)](https://www.npmjs.com/package/map-files) [![NPM downloads](https://img.shields.io/npm/dm/map-files.svg?style=flat)](https://npmjs.org/package/map-files) [![Build Status](https://img.shields.io/travis/jonschlinkert/map-files.svg?style=flat)](https://travis-ci.org/jonschlinkert/map-files)
 
-> Return an object for a glob of files. Pass a `rename` function for the keys, or a `parse` function for the content, allowing it to be used for readable or require-able files.
-
-As of v0.5.0, map-files returns absolute file paths by default. You can achieve the same results by using a custom `name` function as in the [examples](#options-name).
+Return an object for a glob of files. Pass a `rename` function for the keys, or a `parse` function for the content, allowing it to be used for readable or require-able files.
 
 ## Install
 
@@ -12,111 +10,151 @@ Install with [npm](https://www.npmjs.com/):
 $ npm install map-files --save
 ```
 
+**Heads up!**
+
+Breaking changes in v0.8.0. See [the history](#history) for details.
+
 ## Usage
 
 ```js
-var files = require('map-files');
-console.log(files('templates/*.txt'));
+var mapFiles = require('map-files');
+console.log(mapFiles('templates/*.txt'));
 ```
-Returns an object that looks something like:
+
+Returns an object of [vinyl](http://github.com/gulpjs/vinyl) files that looks something like this:
 
 ```js
-{ a: { content: 'AAA', path: 'templates/a.txt' },
-  b: { content: 'BBB', path: 'templates/b.txt' },
-  c: { content: 'CCC', path: 'templates/c.txt' }}
+{ 'test/fixtures/a.txt': <File "test/fixtures/a.txt" <Buffer 41 41 41>>,
+  'test/fixtures/b.txt': <File "test/fixtures/b.txt" <Buffer 42 42 42>>,
+  'test/fixtures/c.txt': <File "test/fixtures/c.txt" <Buffer 43 43 43>> }
 ```
 
-### options.cache
-
-Type: `Boolean`
-
-Default: `false`
-
-If `true`, results will be cached in memory so that subsequent lookups for the same cwd and patterns don't repeatedly hit the file system.
+## Options
 
 ### options.cwd
+
+Specify the current working directory
+
+**Params**
 
 Type: `String`
 
 Default: `process.cwd()`
 
-Specify the current working directory
+**Example**
 
 ```js
 files('*.txt', {cwd: 'templates'});
 ```
 
-### options.name
-
-Type: `Function`
-
-Default: `path.basename(fp, path.extname(fp))`
+### options.renameKey
 
 Rename the key of each file object:
 
-```js
-var templates = files('templates/*.txt', {
-  name: function (filepath) {
-    return path.basename(filepath);
-  }
-});
-```
-Returns something like:
-
-```js
-{ 'a.txt': { content: 'AAA', path: 'templates/a.txt' },
-  'b.txt': { content: 'BBB', path: 'templates/b.txt' },
-  'c.txt': { content: 'CCC', path: 'templates/c.txt' }}
-```
-
-### options.read
-
-> Pass a custom `read` function to change the object returned for each file.
+**Params**
 
 Type: `Function`
 
-Default: `fs.readFileSync()`
+Default: `file.relative`
 
-The default function reads files and returns a string, but you can do anything
-you want with the function, like `require` files:
+**Example**
 
 ```js
-var helpers = files('helpers/*.js', {
-  read: function (fp) {
-    return require(path.resolve(fp));
+var files = mapFiles('templates/*.txt', {
+  renameKey: function (file) {
+    return file.basename;
   }
 });
-//=> { a: [Function: foo], b: [Function: bar], c: [Function: baz] }
 ```
 
-## Other files libs
+Returns something like:
+
+```js
+{ 'a.txt': <File "test/fixtures/a.txt" <Buffer 41 41 41>>,
+  'b.txt': <File "test/fixtures/b.txt" <Buffer 42 42 42>>,
+  'c.txt': <File "test/fixtures/c.txt" <Buffer 43 43 43>> }
+```
+
+### options.decorate
+
+Pass an object of methods to decorate as getters onto each file in the results.
+
+```js
+var yaml = require('js-yaml');
+
+var files = mapFiles('test/fixtures/*.yml', {
+  renameKey: 'stem',
+  decorate: {
+    yaml: function(file) {
+      return yaml.safeLoad(file.contents.toString());
+    }
+  }
+});
+
+console.log(files.a.yaml);
+//=> {title: 'AAA'}
+```
+
+## History
+
+**v0.8.0**
+
+* `options.name` was removed, use `options.renameKey` instead.
+* `options.cache` was removed
+* `options.read` was removed
+* `options.decorate` was added. See the [decorate docs](#options.decorate).
+
+**v0.5.0**
+
+As of v0.5.0, map-files returns absolute file paths by default. You can achieve the same results by using a custom `name` function as in the [examples](#options-name).
+
+## Related projects
+
+You might also be interested in these projects:
+
 * [export-files](https://www.npmjs.com/package/export-files): node.js utility for exporting a directory of files as modules. | [homepage](https://github.com/jonschlinkert/export-files)
 * [file-reader](https://www.npmjs.com/package/file-reader): Read a glob of files, dynamically choosing the reader or requiring the files based on… [more](https://www.npmjs.com/package/file-reader) | [homepage](https://github.com/jonschlinkert/file-reader)
 * [filter-files](https://www.npmjs.com/package/filter-files): Recursively read directories and return a list of files, filtered to have only the files… [more](https://www.npmjs.com/package/filter-files) | [homepage](https://github.com/jonschlinkert/filter-files)
 * [micromatch](https://www.npmjs.com/package/micromatch): Glob matching for javascript/node.js. A drop-in replacement and faster alternative to minimatch and multimatch. | [homepage](https://github.com/jonschlinkert/micromatch)
 
+## Contributing
+
+Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](https://github.com/jonschlinkert/map-files/issues/new).
+
+## Building docs
+
+Generate readme and API documentation with [verb](https://github.com/verbose/verb):
+
+```sh
+$ npm install verb && npm run docs
+```
+
+Or, if [verb](https://github.com/verbose/verb) is installed globally:
+
+```sh
+$ verb
+```
+
 ## Running tests
+
 Install dev dependencies:
 
 ```sh
 $ npm install -d && npm test
 ```
 
-## Contributing
-Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](https://github.com/jonschlinkert/map-files/issues/new).
-
 ## Author
+
 **Jon Schlinkert**
 
-+ [github/jonschlinkert](https://github.com/jonschlinkert)
-+ [twitter/jonschlinkert](http://twitter.com/jonschlinkert)
+* [github/jonschlinkert](https://github.com/jonschlinkert)
+* [twitter/jonschlinkert](http://twitter.com/jonschlinkert)
 
 ## License
+
 Copyright © 2016, [Jon Schlinkert](https://github.com/jonschlinkert).
 Released under the [MIT license](https://github.com/jonschlinkert/map-files/blob/master/LICENSE).
 
 ***
 
 _This file was generated by [verb](https://github.com/verbose/verb), v0.9.0, on April 23, 2016._
-
-[globby]: https://github.com/sindresorhus/globby
